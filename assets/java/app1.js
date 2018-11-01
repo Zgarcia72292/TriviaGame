@@ -6,7 +6,7 @@ var countTimer = 30;
 var unanswered = 0;
 var setIntervalId;
 var setTimeoutId;
-
+var indexArray = 0;
 var gameSpace = $("#quiz-area");
 
 //Create an array for the questions to be stored that we can access later// 
@@ -56,31 +56,48 @@ image: ""
 }
 ];
 
-//create function to display/run the counter//
+
+
 function timerCountDown(){
+    $("#counter").html(countTimer);
     countTimer--;
-$("#counter").html(countTimer);
+if (countTimer ===0){
+    indexArray++;
+}
 }
 //create the funtion for starting the game//
 
 
 function gameStart(){
+    //this line will get rid of the start button when the game starts//
+    $("#start").remove();
+
+    $("#question").html(trivQuestions[indexArray].question);
+    //now we create a for loop to run through the answers
+    for ( var i = 0; i<trivQuestions[indexArray].answers.length; i ++){
+    //now we assign the answers to buttons and their respective id's based on the index position from the answer property in the trivia questiosn array//
+    // $("#btn"+i).html(trivQuestions.answers[i]);
+    
+        $("#question").append("<button class='answerBtn'>"+trivQuestions[indexArray].answers[i] +"</button>");
+    
+    }
+
+    clearInterval(setIntervalId);
      //the next line runs the timerCountDown function every second, which will decrement from the set 30 second time//
- countTimer = setInterval(timerCountDown, 1000);
+ setIntervalId = setInterval(timerCountDown, 1000);
    //then we display a question in the html page. We access the first question by going into the question array at positon 0, then accessing the 'question propery'// 
-$("#question").html(trivQuestions[0].question);
-//now we create a for loop to run through the answers
-for ( var i = 0; i<trivQuestions.answers.length; i ++){
-//now we assign the answers to buttons and their respective id's based on the index position from the answer property in the trivia questiosn array//
-$("#btn"+i).html(trivQuestions.answer[i]);
 
-}
+   //phil helped me see that in my for loop i was missing the [indexArray] variable that i needed. Also i previously was not using a variable indexArray to keep track of the iterations
+   // i only put [0] in which is an issue because i had no variable to call and increment to get to the next item in the array. 
 
 
 }
 
 
 
-// $("#start").on("click", function() {
-//     gameStart();
-//     });
+
+
+
+$("#start").on("click", function(){
+gameStart();
+});
