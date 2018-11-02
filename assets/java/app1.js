@@ -64,63 +64,84 @@ var trivQuestions = [
 ];
 
 
-
+// this function will dictate how the timer operates//
 function timerCountDown() {
     $("#counter").html(countTimer);
     countTimer--;
-    if (countTimer === 0) {
-        indexArray++;
-    }
+    // if (countTimer === 0) {
+    //     indexArray++;
+    // }
 }
-//create the funtion for starting the game//
 
+//the next funtion will be responsible for grabbing a question from the array and displaying the respective answers/buttons//
 
-function gameStart() {
-    //this line will get rid of the start button when the game starts//
-   
-    $("#start").remove();
-  
-    
+function getQuestion() {
+
+    // we want the timer to start everytime there is a new question, so first we get the timer to run//
+    //the next line runs the timerCountDown function every second, which will decrement from the set 30 second time//
+
+    clearInterval(setIntervalId);
+
+    //the clearInterval function won't be important for the first question, but everytiem after the first question when a new question is pulled//
+    //we want the timer to be reset//
+
+    setIntervalId = setInterval(timerCountDown, 1000);
+
     // this line will initialize the first question and write it to the page//
     // We access the first question by going into the question array at positon 0, then accessing the 'question propery'//
-   
+
     $("#question").html(trivQuestions[indexArray].question);
-   
+
     //now we create a for loop to run through the answers
 
     //phil helped me see that in my for loop i was missing the [indexArray] variable that i needed. Also i previously was not using a variable indexArray to keep track of the iterations
     // i only put [0] in which is an issue because i had no variable to call and increment to get to the next item in the array. 
-   
+
     for (var i = 0; i < trivQuestions[indexArray].answers.length; i++) {
-       
-    //now we assign the answers to buttons and their respective id's based on the index position from the answer property in the trivia questiosn array//
+
+        //now we assign the answers to buttons based on how many items are in the index from the answer property in the trivia questiosn array//
 
 
         $("#buttons").append("<button class='answerBtn'>" + trivQuestions[indexArray].answers[i] + "</button>");
 
     }
-   
-    //the next line runs the timerCountDown function every second, which will decrement from the set 30 second time//
-   
-    clearInterval(setIntervalId);
 
-    setIntervalId = setInterval(timerCountDown, 1000);
+
+}
+
+
+
+
+
+//create the funtion for starting the game//
+
+
+function gameStart() {
+    //this line will get rid of the start button when the game starts//
+
+    $("#start").remove();
+
+
+    getQuestion();
+
+
 
     //next we need an on click event to check the answer clicked against the correct answer, and write conditions for a correct guess vs a wrong one//
 
-   $(".answerBtn").on("click", function(){
+    $(".answerBtn").on("click", function () {
 
-    buttonPress = $(".answerBtn").val();
+        // buttonPress = $(".answerBtn").val();
 
-    if (buttonPress == trivQuestions[indexArray].rightAnswer){
+        // if (buttonPress == trivQuestions[indexArray].rightAnswer){
+
+        alert("Nice");
 
 
 
 
 
-    } 
 
-   });
+    });
 
 
 }
