@@ -65,8 +65,10 @@ button:hover {
   border: 2px solid blue;
 }
 
-.start1 {
+.answerBtn {
   margin-top: 10%;
   background: pink;
   border: 2px solid blue;
+  margin-top:6px;
+  
 }
