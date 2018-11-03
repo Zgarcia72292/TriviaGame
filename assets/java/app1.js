@@ -9,7 +9,8 @@ var setTimeoutId;
 var indexArray = 0;
 var gameSpace = $("#quiz-area");
 var buttonPress;
-
+var correctAnswer;
+var btnValue;
 //Create an array for the questions to be stored that we can access later// 
 
 var trivQuestions = [
@@ -102,13 +103,17 @@ function getQuestion() {
         //now we assign the answers to buttons based on how many items are in the index from the answer property in the trivia questiosn array//
 
 
-        $("#buttons").append("<button class='answerBtn'>" + trivQuestions[indexArray].answers[i] + "</button>");
+        $("#buttons").append('<button class="answerBtn" data-name="'+trivQuestions[indexArray].answers[i]+'">' + trivQuestions[indexArray].answers[i] + "</button>");
 
     }
 
 
 }
 
+//now we need a function to compare the possible answers to the correct one//
+function checkAnswer(){
+
+}
 
 
 
@@ -130,11 +135,29 @@ function gameStart() {
 
     $(".answerBtn").on("click", function () {
 
+
+
+        btnValue = $(this).attr("data-name");
+        
+        correctAnswer = trivQuestions[indexArray].rightAnswer;
+
+        if (btnValue == correctAnswer) {
+            indexArray++;
+            $("#buttons").empty();
+            getQuestion();
+        };
+        //     $("#question").empty();
+        //     indexArray++;
+        //     getQuestion();
+
+
+        // };
+
         // buttonPress = $(".answerBtn").val();
 
         // if (buttonPress == trivQuestions[indexArray].rightAnswer){
 
-        alert("Nice");
+      
 
 
 
