@@ -11,6 +11,12 @@ var gameSpace = $("#quiz-area");
 var buttonPress;
 var correctAnswer;
 var btnName;
+
+//adding audio element//
+
+var audioElement = document.createElement("audio");
+    audioElement.setAttribute("src", "assets/audio/theme.mp3");
+
 //Create an array for the questions to be stored that we can access later// 
 
 var trivQuestions = [
@@ -69,10 +75,98 @@ var trivQuestions = [
 function timerCountDown() {
     $("#counter").html(countTimer);
     countTimer--;
+    if (countTimer <= 0) {
+        $("#buttons").empty();
+        timeUp();
+    }
     // if (countTimer === 0) {
     //     indexArray++;
     // }
 }
+
+
+//Here i create a function to re-initialize my getQuestion function and increment the indexArray so when the getQuestion function
+//loads it will move to the next question//
+
+function nextQuestion() {
+    // $("#buttons").empty();
+    countTimer = 30;
+    $("#counter").html(countTimer);
+    // clearInterval(setIntervalId);
+    // setIntervalId = setInterval(timerCountDown, 1000);
+    indexArray++;
+
+    getQuestion();
+
+}
+
+//this is my reset game function//
+
+function resetGame() {
+    indexArray = 0;
+    countTimer = 0;
+    correctAnswers = 0;
+    wrongAnswer = 0;
+    unanswered = 0;
+    getQuestion();
+}
+
+//this function will display the game stats and provide a reset button after all the questions have been answered//
+
+function endGame() {
+    clearInterval(setIntervalId);
+    $("#quiz-area").html(" <h1 id='endFont'>Game Complete!</h1>");
+    $("#quiz-area").append("<p>Correct Answers: " + correctAnswers + "</p>");
+    $("#quiz-area").append("<p>Incorrect Answers: " + wrongAnswer + "</p>");
+    $("#quiz-area").append("<p>Unanswered: " + unanswered + "</p>");
+    $("#quiz-area").append("<button id = 'resetBtn' >" + "Play Again" + "</button>");
+
+}
+
+
+//the next three functions will be for if the player answers correctly, incorrectly, or fails to answer//
+
+function answeredCorrect() {
+    clearInterval(timerCountDown);
+    correctAnswers++;
+    //   $("#quiz-area").html("<h1>'CORRECT'<h1>");
+    if (indexArray === trivQuestions.length - 1) {
+        endGame();
+    }
+    else {
+        nextQuestion();
+        //    setTimeout(nextQuestion,3000);
+    };
+    // clearTimeout(setTimeoutId);
+    //   nextQuestion();
+}
+
+function answeredIncorrect() {
+    clearInterval(timerCountDown);
+    wrongAnswer++;
+    //   $("#quiz-area").html("<h1>'CORRECT'<h1>");
+    if (indexArray === trivQuestions.length - 1) {
+        endGame();
+    }
+    else {
+        nextQuestion();
+
+    };
+
+}
+
+function timeUp() {
+    clearInterval(timerCountDown);
+    unanswered++;
+    if (indexArray === trivQuestions.length - 1) {
+        endGame();
+    }
+    else {
+        nextQuestion();
+
+    };
+}
+
 
 //the next funtion will be responsible for grabbing a question from the array and displaying the respective answers/buttons//
 
@@ -103,49 +197,57 @@ function getQuestion() {
         //now we assign the answers to buttons based on how many items are in the index from the answer property in the trivia questiosn array//
 
 
-        $("#buttons").append('<button class="answerBtn"  data-name="'+trivQuestions[indexArray].answers[i]+'">' + trivQuestions[indexArray].answers[i] + "</button>");
+        $("#buttons").append('<button class="answerBtn"  data-name="' + trivQuestions[indexArray].answers[i] + '">' + trivQuestions[indexArray].answers[i] + "</button>");
 
     }
 
     //next we need an on click event to check the answer clicked against the correct answer, and write conditions for a correct guess vs a wrong one//
 
-    
-         $(".answerBtn").on("click", function () {
+
+    $(".answerBtn").on("click", function () {
 
         //I FINALLY GOT IT! INSIDE OF THE BUTTONS I MADE WITH THE ANSWERS I INCLUDED A DATA-* ATTRIBUTE AND ASSIGNED THE ACTUAL
         //STRING OF THE ANSWERS FROM THEIR [ARRAYINDEX] POSITION FOR COMPARISON. I TRIED USING ANSWERBTN.VAL() BUT THAT WASNT WORKING 
         //AND THIS FINALLY DID! NOW IM GOING TO PUT THE CODE INTO A FUNCTION I CAN CALL//
-    
+
         btnName = $(this).attr("data-name");
-          console.log(this);
-          correctAnswer = trivQuestions[indexArray].rightAnswer;
-  
-          if (btnName == correctAnswer) {
-              
-              $("#buttons").empty();
-              nextQuestion();
-          };
-      });
+        console.log(this);
+        correctAnswer = trivQuestions[indexArray].rightAnswer;
 
-      //Took me an hour to figure out why my arrayIndex would only loop once. The answer that was being compared in the on click event
-      //would only store the specific correct answer for the first question, thus would stop finding anymore correct answers and would not
-      //increment my indexArray to move forward. To reset the stored information in the on.click i moved it into my getQuestion function
-      //so it would reset everytime i called the getQuestion function//
+        if (btnName == correctAnswer) {
+
+            // clearInterval(timerCountDown);
+            $("#buttons").empty();
+            answeredCorrect();
+
+
+            //  nextQuestion();
+            //  $("#quiz-area").html("<h1>'CORRECT'<h1>");
+            //  setTimeout(getQuestion,3000);
+            //  setTimeoutId = setTimeout(function() {
+            //    nextQuestion();
+            //   }, 3000);
+
+
+
+            //   $("#buttons").empty();
+            //   setTimeout($("#quiz-area").html("<h1>'CORRECT'<h1>"),3000);
+            //   answeredCorrect();
+            //   nextQuestion();
+        }
+        else {
+            $("#buttons").empty();
+            answeredIncorrect();
+        };
+    });
+
+    //Took me an hour to figure out why my arrayIndex would only loop once. The answer that was being compared in the on click event
+    //would only store the specific correct answer for the first question, thus would stop finding anymore correct answers and would not
+    //increment my indexArray to move forward. To reset the stored information in the on.click i moved it into my getQuestion function
+    //so it would reset everytime i called the getQuestion function//
 
 }
 
-//Here i create a function to re-initialize my getQuestion function and increment the indexArray so when the getQuestion function
-//loads it will move to the next question//
-
-function nextQuestion(){
-    countTimer=30;
-    clearInterval(setIntervalId);
-    setIntervalId = setInterval(timerCountDown, 1000);
-    indexArray++;
-    
-    getQuestion();
-
-}
 
 
 
@@ -163,27 +265,26 @@ function gameStart() {
 
 
 
-    
 
-        //     $("#question").empty();
-        //     indexArray++;
-        //     getQuestion();
+    //     $("#question").empty();
+    //     indexArray++;
+    //     getQuestion();
 
 
-        // };
+    // };
 
-        // buttonPress = $(".answerBtn").val();
+    // buttonPress = $(".answerBtn").val();
 
-        // if (buttonPress == trivQuestions[indexArray].rightAnswer){
-
-      
+    // if (buttonPress == trivQuestions[indexArray].rightAnswer){
 
 
 
 
 
 
-   
+
+
+
 
 
 }
@@ -195,4 +296,10 @@ function gameStart() {
 
 $("#start").on("click", function () {
     gameStart();
+    audioElement.play();
+});
+
+
+$("#resetBtn").on("click", function () {
+    resetGame();
 });
