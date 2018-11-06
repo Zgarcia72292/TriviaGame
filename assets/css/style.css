@@ -122,3 +122,11 @@ p {
   color: blue;
 
 }
+
+#wrongText {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: crimson;
+  font-weight: bold;
+  font-size: 3em;
+  text-shadow: -1px 0 blue, 0 1px blue, 1px 0 black, 0 -1px black;
+}

@@ -15,7 +15,7 @@ var btnName;
 //adding audio element//
 
 var audioElement = document.createElement("audio");
-    audioElement.setAttribute("src", "assets/audio/theme.mp3");
+audioElement.setAttribute("src", "assets/audio/theme.mp3");
 
 //Create an array for the questions to be stored that we can access later// 
 
@@ -77,11 +77,9 @@ function timerCountDown() {
     countTimer--;
     if (countTimer <= 0) {
         $("#buttons").empty();
-        timeUp();
+        timeDisplay();
     }
-    // if (countTimer === 0) {
-    //     indexArray++;
-    // }
+    
 }
 
 
@@ -89,11 +87,10 @@ function timerCountDown() {
 //loads it will move to the next question//
 
 function nextQuestion() {
-    // $("#buttons").empty();
+   
     countTimer = 30;
     $("#counter").html(countTimer);
-    // clearInterval(setIntervalId);
-    // setIntervalId = setInterval(timerCountDown, 1000);
+    
     indexArray++;
 
     getQuestion();
@@ -102,14 +99,14 @@ function nextQuestion() {
 
 //this is my reset game function//
 
-function resetGame() {
-    indexArray = 0;
-    countTimer = 0;
-    correctAnswers = 0;
-    wrongAnswer = 0;
-    unanswered = 0;
-    getQuestion();
-}
+// function resetGame() {
+//     indexArray = 0;
+//     countTimer = 0;
+//     correctAnswers = 0;
+//     wrongAnswer = 0;
+//     unanswered = 0;
+//     gameStart();
+// }
 
 //this function will display the game stats and provide a reset button after all the questions have been answered//
 
@@ -127,24 +124,28 @@ function endGame() {
 //the next three functions will be for if the player answers correctly, incorrectly, or fails to answer//
 
 function answeredCorrect() {
+
+    $("#display").empty();
+    $("#gif").empty();
     clearInterval(timerCountDown);
     correctAnswers++;
-    //   $("#quiz-area").html("<h1>'CORRECT'<h1>");
+   
     if (indexArray === trivQuestions.length - 1) {
         endGame();
     }
     else {
         nextQuestion();
-        //    setTimeout(nextQuestion,3000);
+       
     };
-    // clearTimeout(setTimeoutId);
-    //   nextQuestion();
+  
 }
 
 function answeredIncorrect() {
+    $("#display").empty();
+    $("#gif").empty();
     clearInterval(timerCountDown);
     wrongAnswer++;
-    //   $("#quiz-area").html("<h1>'CORRECT'<h1>");
+   
     if (indexArray === trivQuestions.length - 1) {
         endGame();
     }
@@ -156,15 +157,57 @@ function answeredIncorrect() {
 }
 
 function timeUp() {
+    $("#display").empty();
+    $("#gif").empty();
     clearInterval(timerCountDown);
     unanswered++;
     if (indexArray === trivQuestions.length - 1) {
         endGame();
     }
     else {
-        nextQuestion();
-
+      nextQuestion();
+     
     };
+}
+
+//the next two functions are responsible for displaying the correct/incorrect and gifs. They then move the game
+//along to the respective correct/incorrect functions//
+
+//I was having trouble getting the setTimeout to run, i think it was because i was using html instead of 
+//append with the commands above the setTimeout. Not sure why it was happening but switching to append worked.
+//also for the longest time I was having trouble making the question disappear, but this was becasue i was putting in a 
+//functon after my correct/wrong display function, whoops// 
+
+function correctDisplay() {
+    clearInterval(setIntervalId);
+    clearTimeout(setTimeoutId);
+    $("#counter").empty();
+    $("#question").empty();
+    $("#display").append("<h1>CORRECT!<h1>");
+    $("#gif").append('<img src="' + trivQuestions[indexArray].image + '"/>');
+    setTimeoutId = setTimeout(answeredCorrect, 5000);
+
+}
+
+function wrongDisplay() {
+    clearInterval(setIntervalId);
+    clearTimeout(setTimeoutId);
+    $("#counter").empty();
+    $("#question").empty();
+    $("#display").append("<h1>INCORRECT!<h1>");
+    $("#gif").append("<div id='wrongText'>Correct Answer: " + trivQuestions[indexArray].rightAnswer + "</div>");
+    setTimeoutId = setTimeout(answeredIncorrect, 5000);
+
+}
+
+function timeDisplay() {
+    clearInterval(setIntervalId);
+    clearTimeout(setTimeoutId);
+    $("#counter").empty();
+    $("#question").empty();
+    $("#display").append("<h1>TIME UP!<h1>");
+    $("#gif").append("<div id='wrongText'>Correct Answer: " + trivQuestions[indexArray].rightAnswer + "</div>");
+    setTimeoutId = setTimeout(timeUp, 5000);
 }
 
 
@@ -216,28 +259,15 @@ function getQuestion() {
 
         if (btnName == correctAnswer) {
 
-            // clearInterval(timerCountDown);
+            
             $("#buttons").empty();
-            answeredCorrect();
+            correctDisplay();
 
-
-            //  nextQuestion();
-            //  $("#quiz-area").html("<h1>'CORRECT'<h1>");
-            //  setTimeout(getQuestion,3000);
-            //  setTimeoutId = setTimeout(function() {
-            //    nextQuestion();
-            //   }, 3000);
-
-
-
-            //   $("#buttons").empty();
-            //   setTimeout($("#quiz-area").html("<h1>'CORRECT'<h1>"),3000);
-            //   answeredCorrect();
-            //   nextQuestion();
+         
         }
         else {
             $("#buttons").empty();
-            answeredIncorrect();
+            wrongDisplay();
         };
     });
 
@@ -247,9 +277,6 @@ function getQuestion() {
     //so it would reset everytime i called the getQuestion function//
 
 }
-
-
-
 
 
 //create the funtion for starting the game//
@@ -262,29 +289,6 @@ function gameStart() {
 
 
     getQuestion();
-
-
-
-
-    //     $("#question").empty();
-    //     indexArray++;
-    //     getQuestion();
-
-
-    // };
-
-    // buttonPress = $(".answerBtn").val();
-
-    // if (buttonPress == trivQuestions[indexArray].rightAnswer){
-
-
-
-
-
-
-
-
-
 
 
 }
@@ -301,5 +305,10 @@ $("#start").on("click", function () {
 
 
 $("#resetBtn").on("click", function () {
-    resetGame();
+    indexArray = 0;
+    countTimer = 0;
+    correctAnswers = 0;
+    wrongAnswer = 0;
+    unanswered = 0;
+    gameStart();
 });
